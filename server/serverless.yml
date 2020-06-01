@@ -20,6 +20,9 @@ provider:
   region: ${opt:region, 'ap-southeast-1'}
   websocketsApiName: custom-websockets-api-name
   websocketsApiRouteSelectionExpression: $request.body.action # custom routes are selected by the value of the action property in the body
+  logs:
+    websocket:
+      level: ERROR
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
   environment:
@@ -40,3 +43,10 @@ functions:
       - websocket:
           route: hello
           routeResponseSelectionExpression: $default
+
+resources:
+  Resources:
+    SconnectWebsocketsRoute:
+      Type: "AWS::ApiGatewayV2::Route"
+      Properties:
+        AuthorizationType: "AWS_IAM"

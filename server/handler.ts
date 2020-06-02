@@ -6,7 +6,8 @@ import * as AWS from "aws-sdk"
 AWS.config.region = process.env.REGION
 
 export const connect: APIGatewayProxyHandler = async (event, _context) => {
-  console.log("connect...")
+  // console.log("event", JSON.stringify(event))
+
   return {
     statusCode: 200,
     body: "OK",

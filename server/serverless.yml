@@ -35,7 +35,6 @@ functions:
     events:
       - websocket:
           route: $connect
-          routeResponseSelectionExpression: $default
 
   hello:
     handler: handler.hello

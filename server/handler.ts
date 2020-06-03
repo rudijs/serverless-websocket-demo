@@ -2,11 +2,33 @@ import { APIGatewayProxyHandler } from "aws-lambda"
 import "source-map-support/register"
 import * as util from "util"
 import * as AWS from "aws-sdk"
+import { ServiceConfigurationOptions } from "aws-sdk/lib/service"
 
-AWS.config.region = process.env.REGION
+import { put } from "./functions/ddb"
+
+let serviceConfigOptions: ServiceConfigurationOptions = {
+  region: process.env.REGION,
+}
+
+// AWS.config.region = process.env.REGION
+const dynamodb = new AWS.DynamoDB.DocumentClient(serviceConfigOptions)
 
 export const connect: APIGatewayProxyHandler = async (event, _context) => {
   // console.log("event", JSON.stringify(event))
+
+  const putParams = {
+    TableName: "WSConnections",
+    Item: {
+      ConnectionID: event.requestContext.connectionId,
+    },
+  }
+
+  // save connection to database
+  // if database error we'll continue the user can still connect to the websocket service
+  const res = await put(dynamodb, putParams)
+  if (res.errors) {
+    console.log("DynamoDB Error:", JSON.stringify(res.errors))
+  }
 
   return {
     statusCode: 200,

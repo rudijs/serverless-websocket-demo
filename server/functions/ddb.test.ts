@@ -1,9 +1,8 @@
 import * as AWSMock from "aws-sdk-mock"
 import * as AWS from "aws-sdk"
 // import { ServiceConfigurationOptions } from "aws-sdk/lib/service"
-// import { DynamoDB } from "aws-sdk"
 
-import { insert } from "./insert"
+import { put } from "./ddb"
 
 // let serviceConfigOptions: ServiceConfigurationOptions = {
 //   region: "ap-southeast-1",
@@ -14,13 +13,12 @@ import { insert } from "./insert"
 
 // https://github.com/dwyl/aws-sdk-mock
 
-describe("insert", () => {
-  it("should save", async () => {
+describe("ddb", () => {
+  it("put should save", async () => {
     const params = {
-      TableName: "Music",
+      TableName: "WSConnections",
       Item: {
-        Artist: "Bob Marley",
-        SongTitle: "One Love",
+        ConnectionID: "NdM-hdWByQ0CHDA=",
       },
     }
 
@@ -35,7 +33,7 @@ describe("insert", () => {
     const client = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" })
 
     // const res = await insert(dynamodb, params)
-    const res = await insert(client, params)
+    const res = await put(client, params)
 
     expect(res.statusCode).toEqual(200)
 
@@ -46,8 +44,7 @@ describe("insert", () => {
     const params = {
       TableName: "BadTableName",
       Item: {
-        Artist: "Bob Marley",
-        SongTitle: "One Love",
+        ConnectionID: "NdM-hdWByQ0CHDA=",
       },
     }
 
@@ -76,8 +73,7 @@ describe("insert", () => {
     })
 
     const client = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" })
-    // const res = await insert(dynamodb, params)
-    const res = await insert(client, params)
+    const res = await put(client, params)
 
     expect(res.statusCode).toEqual(400)
     const error1 = res.errors[0]

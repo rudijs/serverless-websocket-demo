@@ -28,6 +28,14 @@ provider:
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
     REGION: ${self:provider.region}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - arn:aws:dynamodb:ap-southeast-1:205565617391:table/WSConnections
 
 functions:
   connect:

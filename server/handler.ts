@@ -4,7 +4,7 @@ import * as util from "util"
 import * as AWS from "aws-sdk"
 import { ServiceConfigurationOptions } from "aws-sdk/lib/service"
 
-import { put } from "./functions/ddb"
+import { put, deleteItem } from "./functions/ddb"
 
 let serviceConfigOptions: ServiceConfigurationOptions = {
   region: process.env.REGION,
@@ -26,6 +26,30 @@ export const connect: APIGatewayProxyHandler = async (event, _context) => {
   // save connection to database
   // if database error we'll continue the user can still connect to the websocket service
   const res = await put(dynamodb, putParams)
+  if (res.errors) {
+    console.log("DynamoDB Error:", JSON.stringify(res.errors))
+  }
+
+  return {
+    statusCode: 200,
+    body: "OK",
+  }
+}
+
+export const disconnect: APIGatewayProxyHandler = async (event, _context) => {
+  // console.log("event", JSON.stringify(event))
+
+  const deleteParams = {
+    TableName: "WSConnections",
+    Key: {
+      ConnectionID: event.requestContext.connectionId,
+    },
+  }
+
+  // save connection to database
+  // if database error we'll continue the user can still connect to the websocket service
+  const res = await deleteItem(dynamodb, deleteParams)
+  console.log("delete res", res)
   if (res.errors) {
     console.log("DynamoDB Error:", JSON.stringify(res.errors))
   }

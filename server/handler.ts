@@ -76,6 +76,21 @@ export const hello: APIGatewayProxyHandler = async (event, _context) => {
   }
 }
 
+export const ping: APIGatewayProxyHandler = async (event, _context) => {
+  const domain = event.requestContext.domainName
+  const stage = event.requestContext.stage
+  const connectionId = event.requestContext.connectionId
+  const callbackUrlForAWS = util.format(util.format("https://%s/%s", domain, stage)) //construct the needed url
+  // console.log(callbackUrlForAWS, connectionId, event)
+  await sendMessageToClient(callbackUrlForAWS, connectionId, event)
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      message: "pong",
+    }),
+  }
+}
+
 const sendMessageToClient = (url, connectionId, payload) =>
   new Promise((resolve, reject) => {
     const apigatewaymanagementapi = new AWS.ApiGatewayManagementApi({

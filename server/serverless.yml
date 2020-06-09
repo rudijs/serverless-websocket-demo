@@ -59,6 +59,12 @@ functions:
           route: hello
           routeResponseSelectionExpression: $default
 
+  ping:
+    handler: handler.ping
+    events:
+      - websocket:
+          route: ping
+          routeResponseSelectionExpression: $default
 resources:
   Resources:
     SconnectWebsocketsRoute:

@@ -6,8 +6,11 @@ import { ServiceConfigurationOptions } from "aws-sdk/lib/service"
 
 import { put, deleteItem } from "./functions/ddb"
 
+// https://seed.run/blog/how-to-fix-dynamodb-timeouts-in-serverless-application.html
 let serviceConfigOptions: ServiceConfigurationOptions = {
   region: process.env.REGION,
+  httpOptions: { timeout: 5000 },
+  maxRetries: 3,
 }
 
 // AWS.config.region = process.env.REGION

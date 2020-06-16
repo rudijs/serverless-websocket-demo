@@ -30,7 +30,7 @@ describe("ddb", () => {
       callback(null, {})
     })
 
-    const dynamodb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10" })
+    const dynamodb = new AWS.DynamoDB.DocumentClient({ apiVersion: "2012-08-10", httpOptions: { timeout: 5000 }, maxRetries: 3 })
 
     const res = await put(dynamodb, params)
 
